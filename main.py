@@ -22,17 +22,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.howDeep = 1
         self.howManyTimes = self.howManyPages.value()
 
-
-
         self.url = ("reddit.com/r/" + self.subField.text())
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
         }
+
         self.r = requests.get('http://' + self.url, headers=self.headers)
         self.soup = BeautifulSoup(self.r.content, 'html.parser')
         self.howDeep += 0
         self.get_doc()
-
 
     def get_doc(self):
 
@@ -57,7 +55,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.linkMimeDict = {k: v for k, v in self.linkMimeDict.items() if v}
 
-        self.saveFile('JPEG')
+
+        #choose image format
+
+        print (self.linkMimeDict)
+        for item in self.linkMimeDict.itervalues():
+            if item == "image/jpeg":
+                self.saveFile('JPEG')
+            elif item == "image/png":
+                self.saveFile('PNG')
+            elif item == "image/gif":
+                self.saveFile('GIF')
+            else:pass
 
     def saveFile(self,fileType):
         for link in self.linkMimeDict:
