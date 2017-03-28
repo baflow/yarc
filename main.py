@@ -14,24 +14,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
         self.getBut.clicked.connect(self.start_url)
-
-    def field_clear(self):
-        self.subField.clear()
+        # self.getBut.clicked.connect()
+        # self.getBut.clicked.connect()
 
     def start_url(self):
 
         self.howDeep = 1
         self.howManyTimes = self.howManyPages.value()
+
         self.url = ("reddit.com/r/" + self.subField.text())
-
-
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
         }
-
         self.r = requests.get('http://' + self.url, headers=self.headers)
-        self.soup = BeautifulSoup(self.r.content, 'html.parser')
+        self.soup = BeautifulSoup(self.r.content, 'lxml')
+
         self.get_doc()
+
 
     def get_doc(self):
 
@@ -50,19 +49,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         for i in self.mimeType:
             self.mimeTypeSort.append(i[0])
 
+        # merge lists into dict
         self.linkMimeDict = dict(zip(self.links, self.mimeTypeSort))
 
         #Get rid of garbage aka None
 
         self.linkMimeDict = {k: v for k, v in self.linkMimeDict.items() if v}
-
-
-        #choose image format
-
-        print (self.linkMimeDict)
-
+        print(self.linkMimeDict)
         self.saveFile('JPEG')
-
 
     def saveFile(self,fileType):
         for link in self.linkMimeDict:
@@ -73,7 +67,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.fileName = 'img/' + str(self.file_numb) + '.jpg'
                 self.i.save(self.fileName,fileType)
             except:
-                print('error')
                 pass
 
 
@@ -86,13 +79,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
                 # sometimes self.soup.find can't find next button so for now it is bruteforcing it :)
                 try:
-                    self.r = requests.get(self.url['href'])
+                    self.r = requests.get(self.url['href'],headers=self.headers)
                 except:
                     while self.url == None:
-                        self.url = self.soup.find('a', {'rel': 'nofollow next'}, href=True)
+                        self.url = self.soup.find('a',{'rel': 'nofollow next'}, href=True)
 
-                self.soup = BeautifulSoup(self.r.content, 'html.parser')
                 self.howDeep += 1
+
+                self.soup = BeautifulSoup(self.r.content, 'lxml')
+                print self.soup
                 self.get_doc()
 
 
