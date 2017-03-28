@@ -14,15 +14,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
         self.getBut.clicked.connect(self.start_url)
-        # self.getBut.clicked.connect()
-        # self.getBut.clicked.connect()
+
+    def field_clear(self):
+        self.subField.clear()
 
     def start_url(self):
 
         self.howDeep = 1
         self.howManyTimes = self.howManyPages.value()
-
         self.url = ("reddit.com/r/" + self.subField.text())
+
+
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
         }
