@@ -29,7 +29,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.r = requests.get('http://' + self.url, headers=self.headers)
         self.soup = BeautifulSoup(self.r.content, 'html.parser')
-        self.howDeep += 0
         self.get_doc()
 
     def get_doc(self):
@@ -59,14 +58,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #choose image format
 
         print (self.linkMimeDict)
-        for item in self.linkMimeDict.itervalues():
-            if item == "image/jpeg":
-                self.saveFile('JPEG')
-            elif item == "image/png":
-                self.saveFile('PNG')
-            elif item == "image/gif":
-                self.saveFile('GIF')
-            else:pass
+
+        self.saveFile('JPEG')
+
 
     def saveFile(self,fileType):
         for link in self.linkMimeDict:
