@@ -91,7 +91,7 @@ class Worker(QThread):
 
                 self.soup = BeautifulSoup(self.r.content, 'lxml')
                 print self.soup
-                self.get_doc()
+                self.get_doc() 
 
 
 
