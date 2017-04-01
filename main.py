@@ -1,28 +1,23 @@
-import sys,re,random,requests,mimetypes
+import sys,re,random,requests,mimetypes,os
 from PIL import Image
 from io import BytesIO
 from bs4 import BeautifulSoup
 
-from PySide.QtGui import QApplication, QMainWindow, QTextEdit, QPushButton
+from PySide.QtGui import QApplication, QMainWindow
+from PySide.QtCore import *
 
 from ui_yarc import Ui_MainWindow
 
 
-class MainWindow(QMainWindow, Ui_MainWindow):
-    def __init__(self, parent=None):
-
-        super(MainWindow, self).__init__(parent)
-        self.setupUi(self)
-        self.getBut.clicked.connect(self.start_url)
-        # self.getBut.clicked.connect()
-        # self.getBut.clicked.connect()
+class Worker(QThread):
+    """"""
 
     def start_url(self):
-
         self.howDeep = 1
-        self.howManyTimes = self.howManyPages.value()
 
-        self.url = ("reddit.com/r/" + self.subField.text())
+        self.howManyTimes = frame.howManyPages.value()
+
+        self.url = ("reddit.com/r/" + frame.subField.text())
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
         }
@@ -56,9 +51,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.linkMimeDict = {k: v for k, v in self.linkMimeDict.items() if v}
         print(self.linkMimeDict)
+
+
+
         self.saveFile('JPEG')
 
+
     def saveFile(self,fileType):
+
+        if not os.path.exists('img/'):
+            os.makedirs('img/',0755)
+
         for link in self.linkMimeDict:
             try:
                 self.file_numb = random.randint(0000000000,2494849328)
@@ -89,6 +92,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.soup = BeautifulSoup(self.r.content, 'lxml')
                 print self.soup
                 self.get_doc()
+
+
+
+
+class MainWindow(QMainWindow, Ui_MainWindow):
+    def __init__(self, parent=None):
+
+        super(MainWindow, self).__init__(parent)
+        self.setupUi(self)
+        self.wrk = Worker()
+        self.getBut.clicked.connect(self.wrk.start_url)
+
 
 
 
