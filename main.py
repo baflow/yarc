@@ -1,4 +1,5 @@
 import sys,re,random,requests,mimetypes,os
+from datetime import datetime
 from PIL import Image
 from io import BytesIO
 from bs4 import BeautifulSoup
@@ -59,15 +60,19 @@ class Worker(QThread):
 
     def saveFile(self,fileType):
 
-        if not os.path.exists('img/'):
-            os.makedirs('img/',0755)
+        self.today = str(datetime.now())
+
+        if not os.path.exists('img/'+ self.today[:10]):
+            os.makedirs('img/' + self.today[:10],0755)
+
+
 
         for link in self.linkMimeDict:
             try:
                 self.file_numb = random.randint(0000000000,2494849328)
                 self.r = requests.get(link)
                 self.i = Image.open(BytesIO(self.r.content),'r')
-                self.fileName = 'img/' + str(self.file_numb) + '.jpg'
+                self.fileName = 'img/' + self.today[:10] + '/' + str(self.file_numb) + '.jpg'
                 self.i.save(self.fileName,fileType)
             except:
                 pass
