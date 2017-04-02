@@ -62,8 +62,8 @@ class Worker(QThread):
 
         self.today = str(datetime.now())
 
-        if not os.path.exists('img/'+ self.today[:10]):
-            os.makedirs('img/' + self.today[:10],0755)
+        if not os.path.exists('img/' + self.today[:10] + '/' + frame.subField.text()):
+            os.makedirs('img/' + self.today[:10] + '/' + frame.subField.text())
 
 
 
@@ -72,7 +72,7 @@ class Worker(QThread):
                 self.file_numb = random.randint(0000000000,2494849328)
                 self.r = requests.get(link)
                 self.i = Image.open(BytesIO(self.r.content),'r')
-                self.fileName = 'img/' + self.today[:10] + '/' + str(self.file_numb) + '.jpg'
+                self.fileName = 'img/' + self.today[:10] + '/' + frame.subField.text() + '/' + str(self.file_numb) + '.jpg'
                 self.i.save(self.fileName,fileType)
             except:
                 pass
