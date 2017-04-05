@@ -1,56 +1,62 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'yarc_ui.ui'
+# Form implementation generated from reading ui file 'H:\WORKSHOP\yarc\yarc_ui.ui'
 #
-# Created: Sun Mar 26 17:10:55 2017
-#      by: pyside-uic 0.2.15 running on PySide 1.2.1
+# Created by: PyQt5 UI code generator 5.6
 #
 # WARNING! All changes made in this file will be lost!
 
-from PySide import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(344, 85)
-        self.centralwidget = QtGui.QWidget(MainWindow)
+        MainWindow.resize(340, 70)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
+        MainWindow.setSizePolicy(sizePolicy)
+        MainWindow.setMinimumSize(QtCore.QSize(340, 70))
+        MainWindow.setMaximumSize(QtCore.QSize(340, 70))
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.layoutWidget = QtGui.QWidget(self.centralwidget)
+        self.layoutWidget = QtWidgets.QWidget(self.centralwidget)
         self.layoutWidget.setGeometry(QtCore.QRect(10, 10, 222, 29))
         self.layoutWidget.setObjectName("layoutWidget")
-        self.horizontalLayout = QtGui.QHBoxLayout(self.layoutWidget)
+        self.horizontalLayout = QtWidgets.QHBoxLayout(self.layoutWidget)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.label = QtGui.QLabel(self.layoutWidget)
+        self.label = QtWidgets.QLabel(self.layoutWidget)
         self.label.setObjectName("label")
         self.horizontalLayout.addWidget(self.label)
-        self.subField = QtGui.QLineEdit(self.layoutWidget)
+        self.subField = QtWidgets.QLineEdit(self.layoutWidget)
         self.subField.setObjectName("subField")
         self.horizontalLayout.addWidget(self.subField)
-        self.layoutWidget1 = QtGui.QWidget(self.centralwidget)
+        self.layoutWidget1 = QtWidgets.QWidget(self.centralwidget)
         self.layoutWidget1.setGeometry(QtCore.QRect(10, 40, 177, 22))
         self.layoutWidget1.setObjectName("layoutWidget1")
-        self.horizontalLayout_2 = QtGui.QHBoxLayout(self.layoutWidget1)
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.layoutWidget1)
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.label_2 = QtGui.QLabel(self.layoutWidget1)
+        self.label_2 = QtWidgets.QLabel(self.layoutWidget1)
         self.label_2.setObjectName("label_2")
         self.horizontalLayout_2.addWidget(self.label_2)
-        self.howManyPages = QtGui.QSpinBox(self.layoutWidget1)
+        self.howManyPages = QtWidgets.QSpinBox(self.layoutWidget1)
         self.howManyPages.setMinimum(1)
         self.howManyPages.setMaximum(99)
         self.howManyPages.setObjectName("howManyPages")
         self.horizontalLayout_2.addWidget(self.howManyPages)
-        self.widget = QtGui.QWidget(self.centralwidget)
-        self.widget.setGeometry(QtCore.QRect(240, 10, 91, 54))
-        self.widget.setObjectName("widget")
-        self.verticalLayout = QtGui.QVBoxLayout(self.widget)
+        self.layoutWidget2 = QtWidgets.QWidget(self.centralwidget)
+        self.layoutWidget2.setGeometry(QtCore.QRect(240, 10, 91, 54))
+        self.layoutWidget2.setObjectName("layoutWidget2")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.layoutWidget2)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.getBut = QtGui.QPushButton(self.widget)
+        self.getBut = QtWidgets.QPushButton(self.layoutWidget2)
         self.getBut.setObjectName("getBut")
         self.verticalLayout.addWidget(self.getBut)
-        self.stopBut = QtGui.QPushButton(self.widget)
+        self.stopBut = QtWidgets.QPushButton(self.layoutWidget2)
         self.stopBut.setObjectName("stopBut")
         self.verticalLayout.addWidget(self.stopBut)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -59,9 +65,10 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("MainWindow", "Subreddit:", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_2.setText(QtGui.QApplication.translate("MainWindow", "How many pages to crawl:", None, QtGui.QApplication.UnicodeUTF8))
-        self.getBut.setText(QtGui.QApplication.translate("MainWindow", "Get images", None, QtGui.QApplication.UnicodeUTF8))
-        self.stopBut.setText(QtGui.QApplication.translate("MainWindow", "Stop", None, QtGui.QApplication.UnicodeUTF8))
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.label.setText(_translate("MainWindow", "Subreddit:"))
+        self.label_2.setText(_translate("MainWindow", "How many pages to crawl:"))
+        self.getBut.setText(_translate("MainWindow", "Get images"))
+        self.stopBut.setText(_translate("MainWindow", "Stop"))
 
