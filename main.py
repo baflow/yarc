@@ -4,67 +4,92 @@ from PIL import Image
 from io import BytesIO
 from bs4 import BeautifulSoup
 
-from PyQt5 import QtGui, QtWidgets
+from PyQt5 import QtWidgets,QtCore
 
 import ui_yarc
 
 
-class Worker():
+
+class Worker(QtCore.QThread):
     """"""
 
     def __init__(self):
+        QtCore.QThread.__init__(self)
         self.howDeep = 1
+        self.mimeType = []
+        self.mimeTypeSort = []
+        self.filesNum = 0
 
-    def start_url(self):
-
-        self.howManyTimes = frame.howManyPages.value()
-
-        self.url = ("reddit.com/r/" + frame.subField.text())
         self.headers = {
-            'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
+        'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
         }
+
+
+
+    def run(self):
+
+        self.howManyTimes = MainWindow.howManyPages.value()
+        self.url = ("reddit.com/r/" + MainWindow.comboBox.currentText())
         self.r = requests.get('http://' + self.url, headers=self.headers)
         self.soup = BeautifulSoup(self.r.content, 'lxml')
 
-        self.get_doc()
+        if self.soup.find('img', {'class':'interstitial-image'}):
+            self.r = requests.post('https://www.reddit.com/over18?dest=https://www.' + self.url ,data={'over18':'yes'},headers=self.headers)
+            self.soup = BeautifulSoup(self.r.content, 'lxml')
+            self.get_doc()
+
+        else:
+            self.get_doc()
 
     def get_doc(self):
 
         # Regular expression for links in page source
         self.links = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
                                 self.soup.prettify())
-        self.mimeType = []
-        self.mimeTypeSort = []
+
         # chceck image type and append tuple to list
         for link in self.links:
             self.mimeType.append(mimetypes.guess_type(link))
         # extracting information from tuple to list
         for i in self.mimeType:
-            self.mimeTypeSort.append(i[0])
+            if i[0] == 'image/jpeg':
+                self.mimeTypeSort.append('JPEG')
+            elif i[0] == 'image/png':
+                self.mimeTypeSort.append('PNG')
+            elif i[0] == 'image/gif':
+                self.mimeTypeSort.append('GIF')
+            else:
+                self.mimeTypeSort.append(i[0])
+
         # merge lists into dict
         self.linkMimeDict = dict(zip(self.links, self.mimeTypeSort))
         # Get rid of garbage aka None
         self.linkMimeDict = {k: v for k, v in self.linkMimeDict.items() if v}
-        print(self.linkMimeDict)
+        print self.linkMimeDict
 
-        self.saveFile('JPEG')
 
-    def saveFile(self, fileType):
+        self.saveFile()
+
+    def saveFile(self):
 
         self.today = str(datetime.now())
 
-        if not os.path.exists('img/' + self.today[:10] + '/' + frame.subField.text()):
-            os.makedirs('img/' + self.today[:10] + '/' + frame.subField.text())
+        if not os.path.exists('img/' + self.today[:10] + '/' + MainWindow.comboBox.currentText()):
+            os.makedirs('img/' + self.today[:10] + '/' + MainWindow.comboBox.currentText())
 
         for link in self.linkMimeDict:
             try:
                 self.file_numb = random.randint(0000000000, 2494849328)
                 self.r = requests.get(link)
                 self.i = Image.open(BytesIO(self.r.content), 'r')
-                self.fileName = 'img/' + self.today[:10] + '/' + frame.subField.text() + '/' + str(
-                    self.file_numb) + '.jpg'
-                self.i.save(self.fileName, fileType)
+
+
+                self.fileName = 'img/' + self.today[:10] + '/' + MainWindow.comboBox.currentText()+ '/' + str(
+                    self.file_numb) + '.' + 'jpg'
+
+                self.i.save(self.fileName)
             except:
+                print('wrong input type')
                 pass
 
         # go to next page if needed
@@ -83,12 +108,19 @@ class MainWindow(QtWidgets.QMainWindow, ui_yarc.Ui_MainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
-        self.wrk = Worker()
-        self.getBut.clicked.connect(self.wrk.start_url)
+        self.myThread = Worker()
+        self.cb = QtWidgets.QComboBox
+        self.getBut.clicked.connect(self.myThread.start)
+
+        self.stopBut.clicked.connect(self.myThread.terminate)
+        self.getBut.clicked.connect(self.cb)
+
+
 
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
-    frame = MainWindow()
-    frame.show()
+
+    MainWindow = MainWindow()
+    MainWindow.show()
     app.exec_()
