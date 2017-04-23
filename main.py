@@ -1,4 +1,4 @@
-import sys, re, random, requests, mimetypes, os
+import sys, re, random, requests, mimetypes, os, pickle
 from datetime import datetime
 from PIL import Image
 from io import BytesIO
@@ -23,11 +23,18 @@ class Worker(QtCore.QThread):
         self.headers = {
         'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
         }
+        try:
+            self.comboHistory = pickle.load(open('hist.p','rb'))
+        except:
+            self.comboHistory = []
+            pickle.dump(self.comboHistory,open('hist.p','wb'))
+
+
 
     def run(self):
         self.howManyTimes = MainWindow.howManyPages.value()
+        self.combo_history_dump(MainWindow.comboBox.currentText(),self.comboHistory,'hist.p')
         self.url = ("reddit.com/r/" + MainWindow.comboBox.currentText())
-
         self.r = requests.get('http://' + self.url, headers=self.headers)
         self.soup = BeautifulSoup(self.r.content, 'lxml')
         if self.soup.find('img', {'class':'interstitial-image'}):
@@ -36,6 +43,15 @@ class Worker(QtCore.QThread):
             self.get_doc()
         else:
             self.get_doc()
+
+
+    def combo_history_dump(self,entry,list,file):
+        if entry in list:
+            pass
+        else:
+            self.comboHistory.append(entry)
+            pickle.dump(list, open(file, 'wb'))
+
 
     def get_doc(self):
 
@@ -101,6 +117,7 @@ class MainWindow(QtWidgets.QMainWindow, ui_yarc.Ui_MainWindow):
         self.stopBut.clicked.connect(self.label_wrk.hide)
         self.myThread.started.connect(self.label_wrk.show)
         self.myThread.finished.connect(self.label_wrk.hide)
+        self.comboBox.addItems(self.myThread.comboHistory)
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
