@@ -59,6 +59,12 @@ class Worker(QtCore.QThread):
                 self.comboHistory.append(entry)
                 pickle.dump(list, open(file, 'wb'))
 
+        if len(list) == 5:
+            list.pop(4)
+            list.insert(0, entry)
+            pickle.dump(list, open(file, 'wb'))
+        else:
+            pass
 
     def get_links(self):
 
