@@ -40,25 +40,32 @@ class Worker(QtCore.QThread):
         if self.soup.find('img', {'class':'interstitial-image'}):
             self.r = requests.post('https://www.reddit.com/over18?dest=https://www.' + self.url ,data={'over18':'yes'},headers=self.headers)
             self.soup = BeautifulSoup(self.r.content, 'lxml')
-            self.get_doc()
+            self.get_links()
         else:
-            self.get_doc()
+            self.get_links()
 
 
     def combo_history_dump(self,entry,list,file):
-        if entry in list:
-            pass
-        else:
-            self.comboHistory.append(entry)
-            pickle.dump(list, open(file, 'wb'))
+        '''
+        :param entry: STRING 
+        :param list: LIST
+        :param file: FILENAME.p
+        :return:  PICKLE FILE
+        '''
+        while len(list) < 5:
+            if entry in list:
+                pass
+            else:
+                self.comboHistory.append(entry)
+                pickle.dump(list, open(file, 'wb'))
 
 
-    def get_doc(self):
+    def get_links(self):
 
         # Regular expression for links in page source
         self.links = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
                                 self.soup.prettify())
-        # chceck image type and append tuple to list
+        # check image type and append tuple to list
         for link in self.links:
             self.mimeType.append(mimetypes.guess_type(link))
         # extracting information from tuple to list
@@ -87,12 +94,12 @@ class Worker(QtCore.QThread):
             try:
                 self.file_numb = random.randint(0000000000, 2494849328)
                 self.r = requests.get(link)
-                self.i = Image.open(BytesIO(self.r.content), 'r')
+                self.image = Image.open(BytesIO(self.r.content), 'r')
                 self.fileName = 'img/' + self.today[:10] + '/' + MainWindow.comboBox.currentText()+ '/' + str(
                     self.file_numb) + '.' + ext
-                self.i.save(self.fileName)
+                self.image.save(self.fileName)
             except:
-                print('error')
+                print('Unsupported type.')
                 pass
 
         # go to next page if needed
@@ -102,7 +109,7 @@ class Worker(QtCore.QThread):
                 self.r = requests.get(self.url['href'], headers=self.headers)
                 self.howDeep += 1
                 self.soup = BeautifulSoup(self.r.content, 'lxml')
-                self.get_doc()
+                self.get_links()
 
 class MainWindow(QtWidgets.QMainWindow, ui_yarc.Ui_MainWindow):
     def __init__(self, parent=None):
